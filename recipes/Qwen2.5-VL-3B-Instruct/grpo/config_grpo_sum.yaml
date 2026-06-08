@@ -1,0 +1,66 @@
+# Model arguments
+# model_name_or_path: Qwen/Qwen2.5-VL-3B-Instruct
+model_revision: main
+torch_dtype: bfloat16
+attn_implementation: flash_attention_2
+
+# Data training arguments
+dataset_name: YanqiDai/ReSum_GEOQA-R1V-revised
+dataset_config: default
+dataset_prompt_column: problem
+
+system_prompt: "Please reason step by step. As you work through the problem, periodically summarize your progress and reflect on your approach to make sure you are on the right track. Put your final answer without units in \\boxed{}."
+
+# GRPO trainer config
+bf16: true
+use_vllm: true
+vllm_mode: colocate
+vllm_gpu_memory_utilization: 0.3
+do_eval: true
+eval_strategy: "steps"
+eval_steps: 10
+gradient_accumulation_steps: 1
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+learning_rate: 1.0e-06
+log_completions: false
+log_level: info
+logging_first_step: true
+logging_steps: 1
+logging_strategy: steps
+lr_scheduler_type: constant_with_warmup
+max_prompt_length: 2048
+max_completion_length: 1024
+max_steps: -1
+num_generations: 8
+num_train_epochs: 2
+output_dir: checkpoints/Qwen2.5-VL-3B-Instruct_GEOQA-R1V-revised_SUM
+overwrite_output_dir: true
+per_device_eval_batch_size: 32
+per_device_train_batch_size: 32
+push_to_hub: false
+hub_model_id: Qwen2.5-VL-3B-Instruct_GEOQA-R1V-revised_SUM
+hub_strategy: every_save
+report_to:
+- wandb
+reward_funcs:
+- accuracy
+reward_weights:
+- 1.0
+save_strategy: "no"
+save_total_limit: 1
+save_only_model: true
+seed: 42
+warmup_ratio: 0.0
+
+# ── SUM-specific hyperparameters ───────────────────────────────────────────────
+sum_tree_n_per_rollout: 1        # truncation points sampled per rollout
+sum_tree_n_leaves: 4             # leaf continuations per truncation point
+sum_tree_max_new_tokens: 512     # max tokens for each leaf continuation
+sum_tree_trunc_ratios: "0.5"      # comma-separated truncation ratios (str, not list!)
+natural_sum_inject: true         # detect and reward natural summarization behavior
+natural_sum_leaf_weight: 2.0     # reward weight multiplier for natural-summary leaf nodes
+natural_sum_bonus: 0.3           # direct advantage bonus for rollouts with natural summarization
+top_entropy_quantile: 1.0        # fraction of high-entropy tokens to keep (1.0 = all)
+logps_chunk_size: 8              # chunk size for per-token log-prob computation

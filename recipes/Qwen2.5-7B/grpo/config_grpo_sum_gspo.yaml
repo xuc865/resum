@@ -1,0 +1,85 @@
+# SUM + GSPO combined training config for Qwen2.5-7B
+#
+# GSPO contributions (https://huggingface.co/papers/2507.18071):
+#   - Sequence-level importance sampling instead of token-level
+#
+# SUM contributions:
+#   - Tree-rollout with injected summary prefix at truncation points
+#   - Natural summarization detection and bonus reward
+
+# Model arguments
+model_name_or_path: /mnt/workspace/wxc/Agent/models/Qwen2.5-math-7B
+model_revision: main
+torch_dtype: bfloat16
+attn_implementation: flash_attention_2
+
+# Data training arguments
+dataset_name: DigitalLearningGmbH/MATH-lighteval
+dataset_config: default
+dataset_prompt_column: problem
+
+eval_dataset_name: HuggingFaceH4/MATH-500
+eval_dataset_config: default
+eval_dataset_split: test
+
+system_prompt: null
+
+# GRPO trainer config
+bf16: true
+use_vllm: true
+vllm_mode: colocate
+vllm_gpu_memory_utilization: 0.4
+do_eval: true
+eval_strategy: "steps"
+eval_steps: 10
+gradient_accumulation_steps: 8
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+learning_rate: 1.0e-06
+log_completions: false
+log_level: info
+logging_first_step: true
+logging_steps: 1
+logging_strategy: steps
+lr_scheduler_type: constant_with_warmup
+max_prompt_length: 512
+max_completion_length: 2048
+max_steps: 234
+num_generations: 8
+num_train_epochs: 1
+output_dir: checkpoints/Qwen2.5-7B_MATH_SUM_GSPO
+overwrite_output_dir: true
+per_device_eval_batch_size: 8
+per_device_train_batch_size: 4
+push_to_hub: false
+report_to:
+- wandb
+reward_funcs:
+- accuracy
+reward_weights:
+- 1.0
+save_strategy: "steps"
+save_steps: 40
+save_total_limit: 2
+save_only_model: true
+seed: 42
+warmup_ratio: 0.0
+
+# ── GSPO-specific hyperparameters ─────────────────────────────────────────────
+importance_sampling_level: "sequence"
+
+# ── SUM-specific hyperparameters ──────────────────────────────────────────────
+logps_chunk_size: 4
+
+# ── Injected tree-rollout hyperparameters ─────────────────────────────────────
+sum_tree_inject: true
+sum_tree_n_leaves: 2
+sum_tree_trunc_ratios: "0.5"
+sum_tree_n_per_rollout: 1
+sum_tree_max_new_tokens: 512
+
+# ── Natural summarization reward hyperparameters ───────────────────────────────
+natural_sum_inject: true
+natural_sum_leaf_weight: 2.0
+natural_sum_bonus: 0.3

@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="560" viewBox="0 0 1080 560" role="img" aria-labelledby="title desc">
+  <title id="title">ReSum method overview</title>
+  <desc id="desc">A symmetric overview of ReSum rollout branching and summarization-aware advantage.</desc>
+  <defs>
+    <linearGradient id="trunk" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2F6F8F"/>
+      <stop offset="100%" stop-color="#5B8E7D"/>
+    </linearGradient>
+    <linearGradient id="leftWing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#EAF4FF"/>
+      <stop offset="100%" stop-color="#D7E9F7"/>
+    </linearGradient>
+    <linearGradient id="rightWing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F0F7EF"/>
+      <stop offset="100%" stop-color="#DDEED9"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#16324F" flood-opacity="0.14"/>
+    </filter>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2F6F8F"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5B8E7D"/>
+    </marker>
+    <marker id="arrowDark" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2B2D42"/>
+    </marker>
+    <style>
+      .title { font: 700 28px Inter, Arial, sans-serif; fill: #1F2937; }
+      .subtitle { font: 500 15px Inter, Arial, sans-serif; fill: #526070; }
+      .label { font: 700 17px Inter, Arial, sans-serif; fill: #1F2937; }
+      .small { font: 500 13px Inter, Arial, sans-serif; fill: #526070; }
+      .tiny { font: 600 12px Inter, Arial, sans-serif; fill: #6B7280; letter-spacing: .02em; }
+      .node { fill: #FFFFFF; stroke: #D5DEE8; stroke-width: 1.5; filter: url(#softShadow); }
+      .leftBox { fill: url(#leftWing); stroke: #A8C7DF; stroke-width: 1.5; }
+      .rightBox { fill: url(#rightWing); stroke: #A7CBA2; stroke-width: 1.5; }
+      .axis { stroke: #CBD5E1; stroke-width: 2; stroke-dasharray: 6 8; }
+      .edgeBlue { fill: none; stroke: #2F6F8F; stroke-width: 2.7; marker-end: url(#arrowBlue); }
+      .edgeGreen { fill: none; stroke: #5B8E7D; stroke-width: 2.7; marker-end: url(#arrowGreen); }
+      .edgeDark { fill: none; stroke: #2B2D42; stroke-width: 2.4; marker-end: url(#arrowDark); }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1080" height="560" rx="28" fill="#FBFCFE"/>
+  <text x="540" y="54" text-anchor="middle" class="title">ReSum: Symmetric Rollout Branching for Self-Summarization</text>
+  <text x="540" y="82" text-anchor="middle" class="subtitle">introduce summaries on the left, reinforce them on the right</text>
+
+  <line x1="540" y1="112" x2="540" y2="438" class="axis"/>
+  <text x="540" y="462" text-anchor="middle" class="tiny">shared prompt group</text>
+
+  <rect x="410" y="118" width="260" height="70" rx="18" fill="url(#trunk)" filter="url(#softShadow)"/>
+  <text x="540" y="148" text-anchor="middle" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">Initial RLVR Rollouts</text>
+  <text x="540" y="171" text-anchor="middle" fill="#EAF4FF" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="500">sample task-rewarded trajectories</text>
+
+  <rect x="88" y="214" width="326" height="164" rx="22" class="leftBox"/>
+  <text x="251" y="246" text-anchor="middle" class="label">Artificial Points</text>
+  <text x="251" y="270" text-anchor="middle" class="small">silent positions</text>
+  <rect x="128" y="294" width="246" height="52" rx="14" class="node"/>
+  <text x="251" y="316" text-anchor="middle" class="small">inject a summary prefix</text>
+  <text x="251" y="337" text-anchor="middle" class="tiny">"In summary, ..."</text>
+
+  <rect x="666" y="214" width="326" height="164" rx="22" class="rightBox"/>
+  <text x="829" y="246" text-anchor="middle" class="label">Natural Points</text>
+  <text x="829" y="270" text-anchor="middle" class="small">self-summary points</text>
+  <rect x="706" y="294" width="246" height="52" rx="14" class="node"/>
+  <text x="829" y="316" text-anchor="middle" class="small">branch at summary</text>
+  <text x="829" y="337" text-anchor="middle" class="tiny">"let me recap ..."</text>
+
+  <rect x="158" y="422" width="210" height="68" rx="18" class="node"/>
+  <text x="263" y="450" text-anchor="middle" class="label">Leaf Continuations</text>
+  <text x="263" y="473" text-anchor="middle" class="small">measure effect</text>
+
+  <rect x="712" y="422" width="210" height="68" rx="18" class="node"/>
+  <text x="817" y="450" text-anchor="middle" class="label">Weighted Leaves</text>
+  <text x="817" y="473" text-anchor="middle" class="small">reward useful recaps</text>
+
+  <rect x="402" y="416" width="276" height="86" rx="20" fill="#FFFFFF" stroke="#D6D3E8" stroke-width="1.7" filter="url(#softShadow)"/>
+  <text x="540" y="449" text-anchor="middle" class="label">Summarization-Aware</text>
+  <text x="540" y="472" text-anchor="middle" class="label">Advantage</text>
+  <text x="540" y="492" text-anchor="middle" class="small">compare paired branches</text>
+
+  <path d="M 486 188 C 410 206, 334 216, 275 214" class="edgeBlue"/>
+  <path d="M 594 188 C 670 206, 746 216, 805 214" class="edgeGreen"/>
+  <path d="M 251 378 C 252 396, 256 407, 263 422" class="edgeBlue"/>
+  <path d="M 829 378 C 828 396, 824 407, 817 422" class="edgeGreen"/>
+  <path d="M 368 456 C 394 456, 390 456, 402 456" class="edgeBlue"/>
+  <path d="M 712 456 C 686 456, 690 456, 678 456" class="edgeGreen"/>
+  <path d="M 540 188 C 540 246, 540 338, 540 416" class="edgeDark"/>
+
+  <text x="358" y="205" text-anchor="middle" class="tiny">introduce</text>
+  <text x="722" y="205" text-anchor="middle" class="tiny">reinforce</text>
+  <text x="560" y="324" text-anchor="start" class="tiny">original rollouts</text>
+</svg>

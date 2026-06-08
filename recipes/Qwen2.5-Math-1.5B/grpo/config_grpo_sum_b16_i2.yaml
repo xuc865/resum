@@ -1,0 +1,62 @@
+# SUM budget ablation: total_budget=16, initial=2, n_leaves=7
+# Budget: 2 initial + 2x1x7 branches = 16 total
+model_name_or_path: /mnt/workspace/wxc/Agent/models/Qwen2.5-Math-1.5B
+model_revision: main
+torch_dtype: bfloat16
+attn_implementation: flash_attention_2
+dataset_name: DigitalLearningGmbH/MATH-lighteval
+dataset_config: default
+dataset_prompt_column: problem
+eval_dataset_name: HuggingFaceH4/MATH-500
+eval_dataset_config: default
+eval_dataset_split: test
+system_prompt: null
+bf16: true
+use_vllm: true
+vllm_mode: colocate
+vllm_gpu_memory_utilization: 0.3
+do_eval: true
+eval_strategy: "steps"
+eval_steps: 100
+gradient_accumulation_steps: 4
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+learning_rate: 1.0e-06
+log_completions: false
+log_level: info
+logging_first_step: true
+logging_steps: 1
+logging_strategy: steps
+lr_scheduler_type: constant_with_warmup
+max_prompt_length: 512
+max_completion_length: 2048
+max_steps: 234
+num_train_epochs: 1
+per_device_eval_batch_size: 32
+per_device_train_batch_size: 32
+push_to_hub: false
+report_to:
+- wandb
+reward_funcs:
+- accuracy
+reward_weights:
+- 1.0
+save_strategy: "steps"
+save_steps: 40
+save_total_limit: 2
+save_only_model: true
+seed: 42
+warmup_ratio: 0.0
+logps_chunk_size: 4
+natural_sum_inject: true
+natural_sum_leaf_weight: 2.0
+natural_sum_bonus: 0.3
+num_generations: 2
+output_dir: checkpoints/Qwen2.5-1.5B_SUM_b16_i2
+overwrite_output_dir: true
+sum_tree_inject: true
+sum_tree_n_leaves: 7
+sum_tree_trunc_ratios: "0.5"
+sum_tree_n_per_rollout: 1
+sum_tree_max_new_tokens: 512

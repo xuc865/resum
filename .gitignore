@@ -1,0 +1,36 @@
+# 模型检查点（通常很大）
+checkpoints/
+
+# 训练日志
+wandb/
+swanlog/
+logs/
+*.log
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Jupyter Notebook 检查点
+.ipynb_checkpoints/
+
+# 环境
+.env
+.venv
+env/
+venv/
+
+# IDE
+.idea/
+.vscode/
+
+# 临时文件
+*.tmp
+*.bak

@@ -1,0 +1,91 @@
+# SUM (Summary-branching RL) training config for Qwen2.5-7B
+# Ported from verl-based mytrain_sum.sh
+
+# Model arguments
+model_name_or_path: /mnt/workspace/wxc/Agent/models/Qwen2.5-Math-1.5B
+model_revision: main
+torch_dtype: bfloat16
+attn_implementation: flash_attention_2
+
+# Data training arguments
+dataset_name: DigitalLearningGmbH/MATH-lighteval
+dataset_config: default
+dataset_prompt_column: problem
+
+eval_dataset_name: HuggingFaceH4/MATH-500
+eval_dataset_config: default
+eval_dataset_split: test
+
+# SUM system prompt is injected automatically by grpo_sum.py
+# (do NOT set system_prompt here — it will be overridden by SUM_SYSTEM_PROMPT)
+system_prompt: null
+
+# GRPO trainer config
+bf16: true
+use_vllm: true
+vllm_mode: colocate
+vllm_gpu_memory_utilization: 0.3
+do_eval: true
+eval_strategy: "steps"
+eval_steps: 1
+gradient_accumulation_steps: 4
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+learning_rate: 1.0e-06
+log_completions: false
+log_level: info
+logging_first_step: true
+logging_steps: 1
+logging_strategy: steps
+lr_scheduler_type: constant_with_warmup
+max_prompt_length: 512
+max_completion_length: 2048
+max_steps: 234
+num_generations: 8
+num_train_epochs: 1
+output_dir: checkpoints/Qwen2.5-Math-1.5B_MATH_SUM
+overwrite_output_dir: true
+per_device_eval_batch_size: 32
+per_device_train_batch_size: 32
+push_to_hub: false
+report_to:
+- wandb
+reward_funcs:
+- accuracy
+reward_weights:
+- 1.0
+save_strategy: "steps"
+save_steps: 40
+save_total_limit: 2
+save_only_model: true
+seed: 42
+warmup_ratio: 0.0
+
+# ── SUM-specific hyperparameters ──────────────────────────────────────────────
+logps_chunk_size: 4
+
+# ── Injected tree-rollout hyperparameters ─────────────────────────────────────
+# Each rollout is truncated at a selected point, a natural-language summary
+# prefix is injected (e.g. "To summarize my progress so far:"), and k leaf
+# continuations are generated. No closing tag required -- the model summarizes
+# and reflects freely. All leaves share the same question_uid as the parent
+# rollout, so they participate in the same GRPO advantage group.
+# Advantages are std-normalized (same as trl baseline) to keep loss in range.
+sum_tree_inject: true
+sum_tree_n_leaves: 2           # continuations per truncation point (shared with natural branches)
+sum_tree_trunc_ratios: "0.5"   # truncate at 50% of completion length
+sum_tree_n_per_rollout: 1      # truncation points sampled per rollout
+sum_tree_max_new_tokens: 512   # max new tokens per leaf continuation (shared with natural branches)
+
+# ── Natural summarization reward hyperparameters ───────────────────────────────
+# When the model spontaneously produces a summarization phrase (e.g.
+# "to summarize", "in summary", "let me summarize"), we:
+#   1. Split from that point and generate leaf continuations (same as injected branches).
+#   2. Weight those leaves MORE heavily in advantage computation (natural_sum_leaf_weight).
+#   3. Give the original rollout a direct advantage bonus (natural_sum_bonus).
+# This creates a strong gradient signal: natural summarization is rewarded MORE
+# than artificially injected branches.
+natural_sum_inject: true
+natural_sum_leaf_weight: 2.0   # reward weight multiplier for natural-summary leaves (vs 1.0 for injected)
+natural_sum_bonus: 0.3         # direct advantage bonus for rollouts with natural summary
