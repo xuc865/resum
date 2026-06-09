@@ -195,10 +195,5 @@ CUDA_VISIBLE_DEVICES=0 bash eval/evaluate_math.sh <model_path> --enrich-prompt t
 ## 📚 Citation
 
 ```bibtex
-@article{resum2026,
-  title = {ReSum: Synergizing LLM Reasoning and Summarization with Reinforcement Learning},
-  author = {Anonymous},
-  journal = {Submitted to NeurIPS},
-  year = {2026}
-}
+coming soon
 ```
